@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33c54f2932ca055458604b98013575d9, type: 3}
+  m_Name: Shotgun
+  m_EditorClassIdentifier: 
+  weaponName: Shotgun
+  icon: {fileID: 0}
+  prefab: {fileID: 8736569566231288919, guid: 7e23b5d8b4c104144869f0c730d5f9a2, type: 3}
+  defaultSlot: 0
+  positionOffset: {x: -0.521, y: 0.228, z: 0.055}
+  rotationOffset: {x: 25.153, y: -240.554, z: 96.328}
+  scale: {x: 1, y: 1, z: 1}
+  holsterSlot: 0
+  holsterPositionOffset: {x: -0.521, y: 0.228, z: 0.055}
+  holsterRotationOffset: {x: 25.153, y: -240.554, z: 96.328}
+  damageMultiplier: 1
+  rangeBonus: 0
+  attackSpeedMultiplier: 1
+  hitRadiusBonus: 0

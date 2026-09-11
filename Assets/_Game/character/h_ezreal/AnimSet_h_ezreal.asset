@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63d5947b2e150b94d9c942144bafdebd, type: 3}
+  m_Name: AnimSet_h_ezreal
+  m_EditorClassIdentifier: 
+  attacks:
+  - id: Attack_1
+    leadIn: {fileID: 0}
+    leadOut: {fileID: 0}
+    leadTransitionDuration: 0.05
+    useMultiSegment: 0
+    segments:
+    - {fileID: 1827226128182048838, guid: 140a9170c889182468b4a6c9a5773d7d, type: 3}
+    segmentTransitionDuration: 0.08
+    canInterruptSelf: 1
+  - id: Attack_2
+    leadIn: {fileID: 0}
+    leadOut: {fileID: 0}
+    leadTransitionDuration: 0.05
+    useMultiSegment: 0
+    segments:
+    - {fileID: 1827226128182048838, guid: bdf01ac62678ebe4e86969065f2fc0b0, type: 3}
+    segmentTransitionDuration: 0.08
+    canInterruptSelf: 1
+  - id: Attack_3
+    leadIn: {fileID: 0}
+    leadOut: {fileID: 0}
+    leadTransitionDuration: 0.05
+    useMultiSegment: 0
+    segments:
+    - {fileID: 1827226128182048838, guid: 9409c810214c5074dbc9753788482052, type: 3}
+    segmentTransitionDuration: 0.08
+    canInterruptSelf: 1
+  - id: Attack_4
+    leadIn: {fileID: 0}
+    leadOut: {fileID: 0}
+    leadTransitionDuration: 0.05
+    useMultiSegment: 0
+    segments:
+    - {fileID: 1827226128182048838, guid: b24ecc6d7b75d1e4baec926215e46eb7, type: 3}
+    segmentTransitionDuration: 0.08
+    canInterruptSelf: 1
+  skills:
+  - id: Skill_Q
+    leadIn: {fileID: 0}
+    leadOut: {fileID: 0}
+    leadTransitionDuration: 0.05
+    useMultiSegment: 0
+    segments:
+    - {fileID: 1827226128182048838, guid: d5c063439eb7e3141985a989dd205aeb, type: 3}
+    segmentTransitionDuration: 0.08
+    canInterruptSelf: 1
+  - id: Skill_W
+    leadIn: {fileID: 0}
+    leadOut: {fileID: 0}
+    leadTransitionDuration: 0.05
+    useMultiSegment: 0
+    segments:
+    - {fileID: 1827226128182048838, guid: 29fc2857ef7b0b34190afd3b10eaca2d, type: 3}
+    segmentTransitionDuration: 0.08
+    canInterruptSelf: 1
+  - id: Skill_E
+    leadIn: {fileID: 0}
+    leadOut: {fileID: 0}
+    leadTransitionDuration: 0.05
+    useMultiSegment: 0
+    segments:
+    - {fileID: 1827226128182048838, guid: b0104d080ab8ae946918907abdeac8bd, type: 3}
+    segmentTransitionDuration: 0.08
+    canInterruptSelf: 1
+  - id: Skill_R
+    leadIn: {fileID: 0}
+    leadOut: {fileID: 0}
+    leadTransitionDuration: 0.05
+    useMultiSegment: 0
+    segments:
+    - {fileID: 1827226128182048838, guid: 46155b34ea3c70047bdc8fcf4f41f58e, type: 3}
+    segmentTransitionDuration: 0.08
+    canInterruptSelf: 1
+  blendTransitions: []
+  locomotionStates:
+    idle: Idle
+    jump: Jump
+    jumpMove: JumpMove
+    roll: Roll
+    landHigh: LandHigh
+    quickStop: QuickStop
+    falling: Falling

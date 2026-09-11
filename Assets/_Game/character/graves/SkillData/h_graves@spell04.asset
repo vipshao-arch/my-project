@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f26e4a57720781c40a26ea85214e5bf6, type: 3}
+  m_Name: h_graves@spell04
+  m_EditorClassIdentifier: 
+  assetVersion: 3
+  skillName: Skill R
+  skillId: 204
+  icon: {fileID: 0}
+  category: 0
+  cooldown: 11
+  castTime: 0
+  channelDuration: 0
+  frontSwing: 0.1
+  backSwing: 0.08500001
+  fadeInDuration: 0.08
+  fadeOutDuration: 0.25
+  animTrigger: SkillR
+  animStateId: 4
+  animClipName: 
+  animClips: []
+  multiStage:
+    enabled: 0
+    stageCount: 3
+    stageInterval: 0.3
+    segments: []
+  graphData:
+  - rid: 1000
+  - rid: 5270000000012367872
+  - rid: 5270000000012367873
+  knownAnimations: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 1000
+      type: {class: AnimClipLayerData, ns: Game.SkillSystem, asm: Assembly-CSharp}
+      data:
+        editorTrackRow: -1
+        editorDuration: 0
+        visualOnly: 1
+        animClip: {fileID: 1827226128182048838, guid: 56b3675fa3991e540b1a3f79a2fa54fe, type: 3}
+        triggerTime: 0
+        animSpeed: 1
+        fadeInDuration: 0.05
+        fadeOutDuration: 0.1
+    - rid: 5270000000012367872
+      type: {class: MeleeSwingData, ns: Game.SkillSystem, asm: Assembly-CSharp}
+      data:
+        editorTrackRow: -1
+        editorDuration: 0
+        visualOnly: 0
+        triggerTime: 0
+        range: 8
+        hitRadius: 2
+        hitAngle: 60
+        damage: 60
+        originHeight: 0.8
+        originForwardOffset: 0
+        verticalRange: 2
+        checkObstacle: 1
+        obstacleMask:
+          serializedVersion: 2
+          m_Bits: 1
+    - rid: 5270000000012367873
+      type: {class: MovementData, ns: Game.SkillSystem, asm: Assembly-CSharp}
+      data:
+        editorTrackRow: -1
+        editorDuration: 0
+        visualOnly: 0
+        triggerTime: 0
+        policy: 1
+        speedMultiplier: 1
+        facingMode: 1
+        dashOnCast: 0
+        dashForce: 5
+        dashDuration: 0.2

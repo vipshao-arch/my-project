@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33c54f2932ca055458604b98013575d9, type: 3}
+  m_Name: Dao
+  m_EditorClassIdentifier: 
+  weaponName: Dao
+  icon: {fileID: 0}
+  prefab: {fileID: 8524148798831331261, guid: 16b21a2a6d62258469b3ac154296ba38, type: 3}
+  defaultSlot: 0
+  positionOffset: {x: -0.265, y: 0.1, z: -0.37}
+  rotationOffset: {x: 6, y: 15, z: 160}
+  scale: {x: 1, y: 1, z: 1}
+  holsterSlot: 0
+  holsterPositionOffset: {x: 0, y: 0, z: 0}
+  holsterRotationOffset: {x: 0, y: 0, z: 0}
+  damageMultiplier: 1
+  rangeBonus: 0
+  attackSpeedMultiplier: 1
+  hitRadiusBonus: 0

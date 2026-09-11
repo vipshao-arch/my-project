@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f26e4a57720781c40a26ea85214e5bf6, type: 3}
+  m_Name: h_ezreal@attack02
+  m_EditorClassIdentifier: 
+  assetVersion: 3
+  skillName: h_ezreal@attack02
+  skillId: 102
+  icon: {fileID: 0}
+  category: 1
+  cooldown: 1
+  castTime: 0
+  channelDuration: 0
+  frontSwing: 0.1
+  backSwing: 0.3
+  fadeInDuration: 0.1
+  fadeOutDuration: 0.3
+  animTrigger: Attack
+  animStateId: 2
+  animClipName: 
+  animClips:
+  - {fileID: 1827226128182048838, guid: bdf01ac62678ebe4e86969065f2fc0b0, type: 3}
+  multiStage:
+    enabled: 0
+    stageCount: 1
+    stageInterval: 0.3
+    segments: []
+  graphData:
+  - rid: 4501667394521661471
+  - rid: 4501667394521661472
+  - rid: 4501667394521661473
+  knownAnimations: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 4501667394521661471
+      type: {class: AnimClipLayerData, ns: Game.SkillSystem, asm: Assembly-CSharp}
+      data:
+        editorTrackRow: -1
+        editorDuration: 0
+        visualOnly: 1
+        animClip: {fileID: 1827226128182048838, guid: bdf01ac62678ebe4e86969065f2fc0b0, type: 3}
+        triggerTime: 0
+        animSpeed: 1
+        fadeInDuration: 0.05
+        fadeOutDuration: 0.1
+    - rid: 4501667394521661472
+      type: {class: MovementData, ns: Game.SkillSystem, asm: Assembly-CSharp}
+      data:
+        editorTrackRow: -1
+        editorDuration: 0
+        visualOnly: 0
+        triggerTime: 0
+        policy: 1
+        speedMultiplier: 0.5
+        facingMode: 1
+        dashOnCast: 0
+        dashForce: 5
+        dashDuration: 0.2
+    - rid: 4501667394521661473
+      type: {class: RectShotData, ns: Game.SkillSystem, asm: Assembly-CSharp}
+      data:
+        editorTrackRow: -1
+        editorDuration: 0
+        visualOnly: 0
+        triggerTime: 0.2766667
+        damage: 5
+        shape: 0
+        width: 2
+        height: 5
+        speed: 18
+        maxRange: 6
+        count: 1
+        spreadAngle: 0
+        hitMode: 0
+        pierceCount: 0
+        homingEnabled: 0
+        homingTurnRate: 540
+        homingSearchRadius: 10
+        initialYawOffset: 0
+        initialPitchOffset: 0
+        spawnHeight: 0.9
+        forwardOffset: 0.3
+        projectilePrefab: {fileID: 0}
+        projectileLocalOffset: {x: 0, y: 0, z: 0}
+        projectileLocalEulerOffset: {x: 0, y: 0, z: 0}
+        projectileLifetime: 2
+        projectileLocalScale: 1
+        checkObstacle: 1
+        obstacleMask:
+          serializedVersion: 2
+          m_Bits: 1

@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f0ea877fcee6a54f9e1e7709e0d1688, type: 3}
+  m_Name: DefaultEnemyArchetype
+  m_EditorClassIdentifier: 
+  archetypeName: "\u9ED8\u8BA4\u654C\u4EBA\u914D\u65B9"
+  description: "\u901A\u7528\u654C\u4EBA\u914D\u7F6E\u9884\u8BBE\u6A21\u677F\u3002\u8BF7\u5728\u6B64\u57FA\u7840\u4E0A\u4FEE\u6539\u5E76\u4FDD\u5B58\u5230\u5404\u81EA\u654C\u4EBA\u76EE\u5F55\u3002"
+  enemyClass: 0
+  detectionRange: 8
+  detectionAngle: 180
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  attackRange: 1.5
+  attackHitAngle: 90
+  attackCooldown: 1.5
+  attackDamage: 10
+  attackKnockback: 3
+  attackStartUpTime: 0.15
+  attackHitDelay: 0.3
+  attackRecoverTime: 0.4
+  lockRecoveryRatio: 0.35
+  chaseSpeedMultiplier: 1.2
+  patrolRadius: 3
+  patrolInterval: 3
+  loseTargetRange: 12
+  showHealthBar: 1
+  healthBarWidth: 80
+  healthBarHeight: 8
+  healthBarHeightOffset: 2.2
+  healthBarScale: 0.01
+  dropTable: []
+  debugDraw: 0

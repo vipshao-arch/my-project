@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32c799414accd4342a55660229324ca0, type: 3}
+  m_Name: PlayerConfig_graves_Character
+  m_EditorClassIdentifier: 
+  freeWalkSpeed: 2
+  freeRunSpeed: 3
+  freeSprintSpeed: 5
+  freeCrouchSpeed: 1.5
+  freeRotationSpeed: 10
+  strafeWalkSpeed: 2
+  strafeRunSpeed: 3
+  strafeSprintSpeed: 4.5
+  strafeCrouchSpeed: 1.5
+  strafeRotationSpeed: 10
+  jumpHeight: 4
+  jumpForward: 3
+  jumpTimer: 0.3
+  jumpAirControl: 1
+  coyoteTime: 0.15
+  jumpBufferTime: 0.12
+  knockbackDuration: 0.5
+  speedLerpRate: 12
+  groundMinDistance: 0.2
+  groundMaxDistance: 0.5
+  slopeLimit: 45
+  extraGravity: -10
+  stepOffsetEnd: 0.7
+  stepOffsetStart: 0.05
+  stepSmooth: 4
+  maxHealth: 100
+  healthRecovery: 0
+  healthRecoveryDelay: 3
+  maxStamina: 100
+  staminaRecovery: 20
+  maxMana: 100
+  manaRecovery: 0.3
+  sprintStaminaCost: 25
+  jumpStaminaCost: 15
+  rollStaminaCost: 15
+  ragdollVelocity: -50
+  randomIdleTime: 0
