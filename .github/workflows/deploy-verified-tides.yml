@@ -1,0 +1,83 @@
+name: Deploy verified Forgotten Tides artifact
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: forgotten-tides-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Confirm successful gameplay evidence for the exact game version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          repo = os.environ['GITHUB_REPOSITORY']
+          run = json.loads(subprocess.check_output(['gh', 'api', f'repos/{repo}/actions/runs/40872563079']))
+          assert run['status'] == 'completed' and run['conclusion'] == 'success'
+          assert run['head_sha'] == 'eb7c1100065c313ce578c3a50120c2fa7c6c6c3c'
+          assert os.environ['GITHUB_REF'] == 'refs/heads/main'
+          print('Reusing complete successful browser checks for the exact exported game package.')
+          PY
+      - name: Download the already verified Pages package
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          run-id: 40872563079
+          github-token: ${{ github.token }}
+          path: verified-artifact
+      - name: Verify every packaged file against the current published manifest
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, tarfile
+          from pathlib import Path, PurePosixPath
+          current = Path('tides/release-manifest.json').read_bytes()
+          manifest = json.loads(current)
+          with tarfile.open('verified-artifact/artifact.tar') as archive:
+              files = {}
+              for member in archive.getmembers():
+                  path = PurePosixPath(member.name)
+                  assert not path.is_absolute() and '..' not in path.parts
+                  if member.isdir():
+                      continue
+                  assert member.isfile(), 'Unexpected artifact entry'
+                  name = str(path)
+                  assert name not in files
+                  files[name] = archive.extractfile(member).read()
+              assert files['release-manifest.json'] == current, 'Game package differs from current main'
+              for entry in manifest['files']:
+                  if entry['name'] == '.nojekyll' and entry['name'] not in files:
+                      # The Pages artifact action deliberately omits hidden files.
+                      files[entry['name']] = Path('tides/.nojekyll').read_bytes()
+                  content = files[entry['name']]
+                  assert len(content) == entry['size']
+                  assert hashlib.sha256(content).hexdigest() == entry['sha256']
+                  assert content == (Path('tides') / entry['name']).read_bytes()
+              allowed = {entry['name'] for entry in manifest['files']} | {'release-manifest.json'}
+              assert set(files) <= allowed, 'Unexpected additional files'
+              archive.extractall('verified-tides', filter='data')
+              Path('verified-tides/.nojekyll').write_bytes(files['.nojekyll'])
+          print('Verified package matches current main; all file SHA-256 checks passed.')
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: verified-tides
+      - name: Deploy verified demo
+        id: deployment
+        uses: actions/deploy-pages@v4
