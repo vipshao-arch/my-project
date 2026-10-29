@@ -29,7 +29,9 @@ try:
                        (argument is None or b['argument'] == argument)]
             assert buttons, f'Missing visible native action: {action} {argument}'
             button = buttons[0]
-            page.mouse.click(button['x'], button['y'])
+            rect = page.locator('canvas').bounding_box()
+            page.mouse.click(rect['x'] + button['x'] * rect['width'] / data['viewport'][0],
+                             rect['y'] + button['y'] * rect['height'] / data['viewport'][1])
 
         click_action('sail')
         page.wait_for_function('window.__tidesReadback?.state === 0', timeout=15000)
@@ -49,13 +51,18 @@ try:
         page.screenshot(path=str(out / 'combat.png'))
         report['checks'].append('Native combat button switched to combat layout')
         fatal = [e for e in report['errors'] if any(s in e for s in
-                 ('SCRIPT ERROR', 'Parse Error', 'Failed to load script', 'shader compilation failed',
+                 ('SCRIPT ERROR', 'SHADER ERROR', 'Parse Error', 'Failed to load script', 'shader compilation failed',
                   'No loader found for resource', 'Error loading project data'))]
         assert not fatal, '\n'.join(fatal[:8])
         report['passed'] = True
         browser.close()
 except Exception as error:
     report['failure'] = str(error)
+    try:
+        report['readback'] = page.evaluate('window.__tidesReadback')
+        page.screenshot(path=str(out / 'failure.png'))
+    except Exception:
+        pass
     raise
 finally:
     server.shutdown()
