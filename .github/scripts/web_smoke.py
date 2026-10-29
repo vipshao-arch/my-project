@@ -1,4 +1,5 @@
 import functools
+import base64
 import json
 import threading
 import time
@@ -20,7 +21,13 @@ try:
         page.on('pageerror', lambda err: report['errors'].append(str(err)))
         page.goto(f'http://127.0.0.1:{server.server_port}/?verify=1', timeout=120000)
         page.wait_for_function('window.__tidesReadback?.state === 1', timeout=120000)
-        page.screenshot(path=str(out / 'port.png'))
+        session = page.context.new_cdp_session(page)
+
+        def capture(name):
+            image = session.send('Page.captureScreenshot', {'format': 'png', 'fromSurface': True})
+            (out / (name + '.png')).write_bytes(base64.b64decode(image['data']))
+
+        capture('port')
         report['checks'].append('Normal startup reached port with the latest native UI')
 
         def click_action(action, argument=None):
@@ -40,15 +47,15 @@ try:
         page.wait_for_timeout(1500)
         moved = page.evaluate('window.__tidesReadback.position')
         assert sum((a-b)**2 for a,b in zip(position, moved)) > 0.1, 'Ship did not move after sailing'
-        page.screenshot(path=str(out / 'sailing.png'))
+        capture('sailing')
         report['checks'].append('Native sail button entered sailing and the ship moved')
         click_action('anchor')
         page.wait_for_function('window.__tidesReadback.anchored && window.__tidesReadback.speed === 0', timeout=10000)
-        page.screenshot(path=str(out / 'anchor.png'))
+        capture('anchor')
         report['checks'].append('Native anchor button stopped the ship')
         click_action('system', 'combat')
         page.wait_for_function("window.__tidesReadback.system === 'combat'", timeout=10000)
-        page.screenshot(path=str(out / 'combat.png'))
+        capture('combat')
         report['checks'].append('Native combat button switched to combat layout')
         fatal = [e for e in report['errors'] if any(s in e for s in
                  ('SCRIPT ERROR', 'SHADER ERROR', 'Parse Error', 'Failed to load script', 'shader compilation failed',
@@ -60,7 +67,7 @@ except Exception as error:
     report['failure'] = str(error)
     try:
         report['readback'] = page.evaluate('window.__tidesReadback')
-        page.screenshot(path=str(out / 'failure.png'))
+        capture('failure')
     except Exception:
         pass
     raise
