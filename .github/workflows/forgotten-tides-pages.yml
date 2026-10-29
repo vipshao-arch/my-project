@@ -1,0 +1,78 @@
+name: Publish Forgotten Tides demo
+
+on:
+  push:
+    branches: [main, web-playtest-20261029]
+    paths:
+      - 'tides/**'
+      - '.github/workflows/forgotten-tides-pages.yml'
+      - '.github/scripts/web_smoke.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: forgotten-tides-pages
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Verify demo files
+        run: |
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root = Path('tides')
+          manifest = json.loads((root / 'release-manifest.json').read_text(encoding='utf-8'))
+          for entry in manifest['files']:
+              path = root / entry['name']
+              assert path.is_file(), f'Missing {path}'
+              assert path.stat().st_size == entry['size'], f'Wrong size: {path}'
+              assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], f'Wrong checksum: {path}'
+          assert (root / 'index.html').is_file()
+          assert (root / 'index.pck.parts.json').is_file()
+          parts = json.loads((root / 'index.pck.parts.json').read_text())
+          pack = b''.join((root / part['name']).read_bytes() for part in parts['parts'])
+          assert len(pack) == parts['bytes']
+          assert hashlib.sha256(pack).hexdigest() == parts['sha256']
+          assert (root / 'index.wasm').is_file()
+          PY
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install isolated browser test dependencies
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Verify browser gameplay before publication
+        run: python .github/scripts/web_smoke.py
+        timeout-minutes: 4
+      - name: Save browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-gameplay-evidence
+          path: test-results
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: tides
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - name: Deploy demo
+        id: deployment
+        uses: actions/deploy-pages@v4

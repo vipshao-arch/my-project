@@ -1,0 +1,103 @@
+{
+  "game": "遗忘潮汐",
+  "repository": "vipshao-arch/my-project",
+  "prepared_at": "2026-10-29T11:24:26.993375+00:00",
+  "files": [
+    {
+      "name": ".nojekyll",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "index.apple-touch-icon.png",
+      "size": 13842,
+      "sha256": "a470efe5e2206a10a2bbc534db68f8c863d2a97dcf3914ec544de8d1c9ed9b16"
+    },
+    {
+      "name": "index.audio.position.worklet.js",
+      "size": 2973,
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+    },
+    {
+      "name": "index.audio.worklet.js",
+      "size": 7298,
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+    },
+    {
+      "name": "index.html",
+      "size": 6961,
+      "sha256": "b932dec9e25e692f7ef71bf35cfcb9d374942fd9181b88bd808fc99b273448dc"
+    },
+    {
+      "name": "index.icon.png",
+      "size": 6028,
+      "sha256": "6f8786de3aaf15f608a183313316a2dc10fb1ffe5970d54c3eb6bc62726fbfde"
+    },
+    {
+      "name": "index.js",
+      "size": 279815,
+      "sha256": "33c94cb3175f3333b82e2a3be5e8e86f77986f0aa2042b1631f6367a4e5bb6ba"
+    },
+    {
+      "name": "index.pck.part00",
+      "size": 25165824,
+      "sha256": "25641c3f710095c5e7f532714d6f31ff9eed2fef5ac2469426dd351dcdd15094"
+    },
+    {
+      "name": "index.pck.part01",
+      "size": 25165824,
+      "sha256": "6aaf872118ef6fd7fa3f4d3f2b4341f51ce1dc7526b61e77d248c920dedd351a"
+    },
+    {
+      "name": "index.pck.part02",
+      "size": 25165824,
+      "sha256": "e238ebce47908287a137f5d4cbc96106debf7ded626872ac432b927e2a72be39"
+    },
+    {
+      "name": "index.pck.part03",
+      "size": 10933616,
+      "sha256": "8295eb59bf9a69ded5f33ab7af5c5eee8ba64dcd7709b6570b7827917da6f8ca"
+    },
+    {
+      "name": "index.pck.parts.json",
+      "size": 765,
+      "sha256": "9b6d350ee54287b5bbaf72ccc45f3632129076a89502c97c4c08e3cb30d624d8"
+    },
+    {
+      "name": "index.png",
+      "size": 21443,
+      "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+    },
+    {
+      "name": "index.wasm",
+      "size": 39514754,
+      "sha256": "fc74679e3b97f76878947fcd4fbe1268cbfa6188182a2e33bbc3f5dc9bfa57d0"
+    }
+  ],
+  "pack": {
+    "bytes": 86431088,
+    "sha256": "3fa3228f7225beb4a73fb5d799ade3ccc48eac2652b63e10fba2ba8c6fed08fe",
+    "parts": [
+      {
+        "name": "index.pck.part00",
+        "bytes": 25165824,
+        "sha256": "25641c3f710095c5e7f532714d6f31ff9eed2fef5ac2469426dd351dcdd15094"
+      },
+      {
+        "name": "index.pck.part01",
+        "bytes": 25165824,
+        "sha256": "6aaf872118ef6fd7fa3f4d3f2b4341f51ce1dc7526b61e77d248c920dedd351a"
+      },
+      {
+        "name": "index.pck.part02",
+        "bytes": 25165824,
+        "sha256": "e238ebce47908287a137f5d4cbc96106debf7ded626872ac432b927e2a72be39"
+      },
+      {
+        "name": "index.pck.part03",
+        "bytes": 10933616,
+        "sha256": "8295eb59bf9a69ded5f33ab7af5c5eee8ba64dcd7709b6570b7827917da6f8ca"
+      }
+    ]
+  }
+}
