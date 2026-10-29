@@ -46,7 +46,7 @@ jobs:
           python-version: '3.12'
       - name: Install isolated browser test dependencies
         run: |
-          pip install playwright
+          pip install playwright psutil
           python -m playwright install --with-deps chromium
       - name: Verify browser gameplay before publication
         run: python .github/scripts/web_smoke.py

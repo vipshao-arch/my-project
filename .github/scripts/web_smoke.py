@@ -2,6 +2,7 @@ import base64
 import functools
 import json
 import threading
+import psutil
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from playwright.sync_api import sync_playwright
@@ -87,9 +88,27 @@ except Exception as error:
     persist()
 finally:
     persist()
+    # WebGL shutdown can stall graceful Browser.close on the software renderer.
+    # Stop only descendants of this fresh Playwright driver's owned process.
     if browser:
-        browser.close()
-    p.stop()
+        driver_pid = p._impl_obj._connection._transport._proc.pid
+        children = psutil.Process(driver_pid).children(recursive=True)
+        for child in reversed(children):
+            try:
+                child.terminate()
+            except psutil.NoSuchProcess:
+                pass
+        _, alive = psutil.wait_procs(children, timeout=5)
+        for child in alive:
+            try:
+                child.kill()
+            except psutil.NoSuchProcess:
+                pass
+        report['browser_cleanup'] = {'owned_driver_pid': driver_pid, 'descendants_stopped': len(children)}
+    try:
+        p.stop()
+    except Exception as stop_error:
+        report['driver_stop_note'] = str(stop_error)
     server.shutdown()
     (out / 'result.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     print(json.dumps(report, ensure_ascii=False))
