@@ -44,6 +44,9 @@ try:
         (out / (name + '.png')).write_bytes(base64.b64decode(image['data']))
 
     capture('port')
+    lighting = page.evaluate('window.__tidesReadback.lighting')
+    assert lighting and lighting['hdr_exposure'] == 1 and lighting['sun_energy'] < 1.1, 'Web lighting profile not active'
+    report['lighting'] = lighting
     report['checks'].append('Normal startup reached port with the latest native UI')
     persist()
 
