@@ -11,6 +11,10 @@ out.mkdir(exist_ok=True)
 server = ThreadingHTTPServer(('127.0.0.1', 0), functools.partial(SimpleHTTPRequestHandler, directory=str(Path('tides').resolve())))
 threading.Thread(target=server.serve_forever, daemon=True).start()
 report = {'passed': False, 'errors': [], 'checks': [], 'clicks': []}
+
+def persist():
+    (out / 'result.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
+
 p = sync_playwright().start()
 browser = None
 page = None
@@ -30,6 +34,7 @@ try:
 
     capture('port')
     report['checks'].append('Normal startup reached port with the latest native UI')
+    persist()
 
     def click_action(action, argument=None):
         data = page.evaluate('window.__tidesReadback')
@@ -41,6 +46,7 @@ try:
         y = rect['y'] + button['y'] * rect['height'] / data['viewport'][1]
         report['clicks'].append({'action': action, 'argument': argument, 'button': button,
                                  'viewport': data['viewport'], 'canvas': rect, 'screen': [x, y]})
+        persist()
         page.mouse.click(x, y)
 
     click_action('sail')
@@ -52,11 +58,16 @@ try:
     assert sum((a-b)**2 for a,b in zip(position, moved)) > 0.1, 'Ship did not move after sailing'
     capture('sailing')
     report['checks'].append('Native sail button entered sailing and the ship moved')
+    persist()
     click_action('anchor')
     page.wait_for_function('window.__tidesReadback.anchored && window.__tidesReadback.speed === 0', timeout=10000)
     capture('anchor')
     report['checks'].append('Native anchor button stopped the ship')
-    click_action('system', 'combat')
+    persist()
+    report['before_combat'] = page.evaluate('window.__tidesReadback')
+    persist()
+    if report['before_combat']['system'] != 'combat':
+        click_action('system', 'combat')
     page.wait_for_function("window.__tidesReadback.system === 'combat'", timeout=10000)
     capture('combat')
     report['checks'].append('Native combat button switched to combat layout')
@@ -64,14 +75,18 @@ try:
              'Failed to load script', 'shader compilation failed', 'No loader found for resource', 'Error loading project data'))]
     assert not fatal, '\n'.join(fatal[:8])
     report['passed'] = True
+    persist()
 except Exception as error:
     report['failure'] = str(error)
+    persist()
     try:
         report['readback'] = page.evaluate('window.__tidesReadback')
         capture('failure')
     except Exception as capture_error:
         report['capture_failure'] = str(capture_error)
+    persist()
 finally:
+    persist()
     if browser:
         browser.close()
     p.stop()
