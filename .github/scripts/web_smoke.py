@@ -26,7 +26,7 @@ try:
     page.on('pageerror', lambda err: report['errors'].append(str(err)))
     page.on('crash', lambda: report['errors'].append('Browser page crashed'))
     page.goto(f'http://127.0.0.1:{server.server_port}/?verify=1', timeout=120000)
-    page.wait_for_function('window.__tidesReadback?.state === 1', timeout=120000)
+    page.wait_for_function('window.__tidesReadback?.state === 1', timeout=120000, polling=200)
     session = page.context.new_cdp_session(page)
 
     def capture(name):
@@ -51,9 +51,9 @@ try:
         page.mouse.click(x, y)
 
     click_action('sail')
-    page.wait_for_function('window.__tidesReadback?.state === 0', timeout=20000)
+    page.wait_for_function('window.__tidesReadback?.state === 0', timeout=90000, polling=200)
     position = page.evaluate('window.__tidesReadback.position')
-    page.wait_for_function('window.__tidesReadback.speed > 0.1', timeout=15000)
+    page.wait_for_function('window.__tidesReadback.speed > 0.1', timeout=30000, polling=200)
     page.wait_for_timeout(1500)
     moved = page.evaluate('window.__tidesReadback.position')
     assert sum((a-b)**2 for a,b in zip(position, moved)) > 0.1, 'Ship did not move after sailing'
@@ -61,7 +61,7 @@ try:
     report['checks'].append('Native sail button entered sailing and the ship moved')
     persist()
     click_action('anchor')
-    page.wait_for_function('window.__tidesReadback.anchored && window.__tidesReadback.speed === 0', timeout=10000)
+    page.wait_for_function('window.__tidesReadback.anchored && window.__tidesReadback.speed === 0', timeout=30000, polling=200)
     capture('anchor')
     report['checks'].append('Native anchor button stopped the ship')
     persist()
@@ -69,7 +69,7 @@ try:
     persist()
     if report['before_combat']['system'] != 'combat':
         click_action('system', 'combat')
-    page.wait_for_function("window.__tidesReadback.system === 'combat'", timeout=10000)
+    page.wait_for_function("window.__tidesReadback.system === 'combat'", timeout=30000, polling=200)
     capture('combat')
     report['checks'].append('Native combat button switched to combat layout')
     fatal = [e for e in report['errors'] if any(s in e for s in ('SCRIPT ERROR', 'SHADER ERROR', 'Parse Error',

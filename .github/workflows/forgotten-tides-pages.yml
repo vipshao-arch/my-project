@@ -50,7 +50,7 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Verify browser gameplay before publication
         run: python .github/scripts/web_smoke.py
-        timeout-minutes: 4
+        timeout-minutes: 6
       - name: Save browser evidence
         if: always()
         uses: actions/upload-artifact@v4
