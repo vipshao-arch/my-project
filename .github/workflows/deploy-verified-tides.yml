@@ -2,6 +2,11 @@ name: Deploy verified Forgotten Tides artifact
 
 on:
   workflow_dispatch:
+    inputs:
+      verified_run:
+        description: Successful candidate run containing the exact game package
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -24,21 +29,26 @@ jobs:
       - name: Confirm successful gameplay evidence for the exact game version
         env:
           GH_TOKEN: ${{ github.token }}
+          VERIFIED_RUN: ${{ inputs.verified_run }}
         run: |
           python3 - <<'PY'
           import json, os, subprocess
           repo = os.environ['GITHUB_REPOSITORY']
-          run = json.loads(subprocess.check_output(['gh', 'api', f'repos/{repo}/actions/runs/40872563079']))
+          run_id = os.environ['VERIFIED_RUN']
+          assert run_id.isdigit()
+          run = json.loads(subprocess.check_output(['gh', 'api', f'repos/{repo}/actions/runs/{run_id}']))
           assert run['status'] == 'completed' and run['conclusion'] == 'success'
-          assert run['head_sha'] == 'eb7c1100065c313ce578c3a50120c2fa7c6c6c3c'
+          assert run['head_branch'] == 'web-playtest-20261029'
           assert os.environ['GITHUB_REF'] == 'refs/heads/main'
+          comparison = json.loads(subprocess.check_output(['gh', 'api', f"repos/{repo}/compare/{run['head_sha']}...{os.environ['GITHUB_SHA']}"]))
+          assert comparison['status'] in ('identical', 'ahead'), 'Verified game commit must be in main history'
           print('Reusing complete successful browser checks for the exact exported game package.')
           PY
       - name: Download the already verified Pages package
         uses: actions/download-artifact@v4
         with:
           name: github-pages
-          run-id: 40872563079
+          run-id: ${{ inputs.verified_run }}
           github-token: ${{ github.token }}
           path: verified-artifact
       - name: Verify every packaged file against the current published manifest

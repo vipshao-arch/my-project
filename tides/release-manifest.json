@@ -1,7 +1,7 @@
 {
   "game": "遗忘潮汐",
   "repository": "vipshao-arch/my-project",
-  "prepared_at": "2026-10-29T11:41:54.123492+00:00",
+  "prepared_at": "2026-10-29T12:54:36.631357+00:00",
   "files": [
     {
       "name": ".nojekyll",
@@ -30,8 +30,8 @@
     },
     {
       "name": "index.html",
-      "size": 6961,
-      "sha256": "6efbeecb49c4ac1b0cf6bf719fb7236cf1b9c531b97bedaebb46ce76d28fd70c"
+      "size": 7215,
+      "sha256": "025180241ec0036d6ce5339044a31dc6ad8d01367f8dec243dcc8f72f1c6057f"
     },
     {
       "name": "index.icon.png",
@@ -46,22 +46,22 @@
     {
       "name": "index.pck.part00",
       "size": 25165824,
-      "sha256": "17a8643914b3788e1031f86d97eb61d8104dbdee8fba42b897e69d6409250956"
+      "sha256": "626998439cbd932fb63794d8327a070ac6b26c036aff718f381f42440f7472ed"
     },
     {
       "name": "index.pck.part01",
       "size": 25165824,
-      "sha256": "7bb1c1d9600e2b3b528d24b8c63c27bd68edb5409689125258734c69e9828ae4"
+      "sha256": "b1c50c99c073772d822350369a38ef7d757b7db4d0810fd29ab4ef0cdf18b616"
     },
     {
       "name": "index.pck.part02",
       "size": 25165824,
-      "sha256": "9603cd0877405d2fcc43ff306a45ddff26e2832b2e9b75ee905e5a8b16a07d68"
+      "sha256": "8866002fa378e7b4af4de2316baf134456ef6e0076fee552b9ab748a0d028fb4"
     },
     {
       "name": "index.pck.part03",
-      "size": 11394228,
-      "sha256": "436f91c2b43a2147be6fd679b4f12ad3fc9fafb081d67846fa4bb943e4a30770"
+      "size": 11400664,
+      "sha256": "05b2633ee08d7d5dbbcd5864406775820c6c67063144f8d9c2f104e08514c6d1"
     },
     {
       "name": "index.pck.part04",
@@ -71,7 +71,7 @@
     {
       "name": "index.pck.parts.json",
       "size": 765,
-      "sha256": "64d0a53183d6992d70ca73c8568aac107b2016deb08af0afc597e0485e0577f9"
+      "sha256": "b9936b4a4d95e3c3986e1ea7ece37528c721c22b06a76e013498ffdd48886c99"
     },
     {
       "name": "index.png",
@@ -85,28 +85,28 @@
     }
   ],
   "pack": {
-    "bytes": 86891700,
-    "sha256": "0d695de5cbe322f7d5d252b4d840eb02d98dab1bc8fc3288049bd00ce92a9747",
+    "bytes": 86898136,
+    "sha256": "7d4cb6c5875299ce4094d9501b0a7b03d69f101e7252d221a296e0abdf3daf0f",
     "parts": [
       {
         "name": "index.pck.part00",
         "bytes": 25165824,
-        "sha256": "17a8643914b3788e1031f86d97eb61d8104dbdee8fba42b897e69d6409250956"
+        "sha256": "626998439cbd932fb63794d8327a070ac6b26c036aff718f381f42440f7472ed"
       },
       {
         "name": "index.pck.part01",
         "bytes": 25165824,
-        "sha256": "7bb1c1d9600e2b3b528d24b8c63c27bd68edb5409689125258734c69e9828ae4"
+        "sha256": "b1c50c99c073772d822350369a38ef7d757b7db4d0810fd29ab4ef0cdf18b616"
       },
       {
         "name": "index.pck.part02",
         "bytes": 25165824,
-        "sha256": "9603cd0877405d2fcc43ff306a45ddff26e2832b2e9b75ee905e5a8b16a07d68"
+        "sha256": "8866002fa378e7b4af4de2316baf134456ef6e0076fee552b9ab748a0d028fb4"
       },
       {
         "name": "index.pck.part03",
-        "bytes": 11394228,
-        "sha256": "436f91c2b43a2147be6fd679b4f12ad3fc9fafb081d67846fa4bb943e4a30770"
+        "bytes": 11400664,
+        "sha256": "05b2633ee08d7d5dbbcd5864406775820c6c67063144f8d9c2f104e08514c6d1"
       }
     ]
   }

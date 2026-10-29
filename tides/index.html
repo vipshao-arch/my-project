@@ -111,18 +111,18 @@ body {
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":86891700,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":86898136,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
 async function startPackedGame(options) {
-  const manifestResponse = await fetch('index.pck.parts.json');
+  const manifestResponse = await fetch('index.pck.parts.json', {cache: 'no-store'});
   if (!manifestResponse.ok) throw new Error('无法获取游戏资源清单');
   const manifest = await manifestResponse.json();
   let loaded = 0;
   const initialize = engine.init('index');
   const buffers = await Promise.all(manifest.parts.map(async part => {
-    const response = await fetch(part.name);
+    const response = await fetch(part.name + '?v=' + part.sha256.slice(0, 16));
     if (!response.ok) throw new Error('游戏资源下载失败：' + part.name);
     const bytes = new Uint8Array(await response.arrayBuffer());
     if (bytes.length !== part.bytes) throw new Error('游戏资源文件不完整');
@@ -138,7 +138,11 @@ async function startPackedGame(options) {
   for (const buffer of buffers) { pack.set(buffer, offset); offset += buffer.length; }
   await engine.preloadFile(pack, 'index.pck');
   await initialize;
-  return engine.start({...options, args: ['--main-pack', 'index.pck']});
+  const args = ['--main-pack', 'index.pck'];
+  const query = new URLSearchParams(location.search);
+  if (query.get('verify') === '1' && query.get('texture_probe') === '1')
+    args.push('res://scenes/qa_web_textures.tscn');
+  return engine.start({...options, args});
 }
 
 

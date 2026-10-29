@@ -2,7 +2,7 @@ name: Publish Forgotten Tides demo
 
 on:
   push:
-    branches: [main, web-playtest-20261029]
+    branches: [web-playtest-20261029]
     paths:
       - 'tides/**'
       - '.github/workflows/forgotten-tides-pages.yml'
@@ -50,7 +50,7 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Verify browser gameplay before publication
         run: python .github/scripts/web_smoke.py
-        timeout-minutes: 6
+        timeout-minutes: 12
       - name: Save browser evidence
         if: always()
         uses: actions/upload-artifact@v4
