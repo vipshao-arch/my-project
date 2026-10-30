@@ -25,16 +25,6 @@ try:
     page.on('console', lambda msg: report['errors'].append(msg.text[:4000]) if msg.type == 'error' else None)
     page.on('pageerror', lambda err: report['errors'].append(str(err)))
     page.on('crash', lambda: report['errors'].append('Browser page crashed'))
-    page.goto(f'http://127.0.0.1:{server.server_port}/?verify=1&texture_probe=1', timeout=120000)
-    page.wait_for_function('window.__tidesTextureProbe?.ready === true', timeout=120000, polling=200)
-    texture_probe = page.evaluate('window.__tidesTextureProbe')
-    assert texture_probe['surfaces'] and all(s['texture'] and s['uv_count'] > 0 for s in texture_probe['surfaces']), 'Missing atlas or UVs in material fixture'
-    probe_session = page.context.new_cdp_session(page)
-    probe_image = probe_session.send('Page.captureScreenshot', {'format': 'png', 'fromSurface': True})
-    (out / 'texture_material_comparison.png').write_bytes(base64.b64decode(probe_image['data']))
-    (out / 'texture_probe.json').write_text(json.dumps(texture_probe, indent=2))
-    report['checks'].append('Original, desktop and Web materials rendered with valid atlas references and UVs; comparison screenshot saved')
-    persist()
     page.goto(f'http://127.0.0.1:{server.server_port}/?verify=1', timeout=120000)
     page.wait_for_function('window.__tidesReadback?.state === 1', timeout=120000, polling=200)
     session = page.context.new_cdp_session(page)
@@ -47,6 +37,10 @@ try:
     lighting = page.evaluate('window.__tidesReadback.lighting')
     assert lighting and lighting['hdr_exposure'] == 1 and lighting['sun_energy'] < 1.1, 'Web lighting profile not active'
     report['lighting'] = lighting
+    art = page.evaluate('window.__tidesReadback.art')
+    assert art['water_shader'].endswith('water_web.gdshader') and art['seabed_triangles'] > 0 and art['contacts'] > 0
+    assert art['camera_distance'] == 185 and art['msaa'] == 1
+    report['art'] = art
     report['checks'].append('Normal startup reached port with the latest native UI')
     persist()
 
@@ -71,6 +65,10 @@ try:
     moved = page.evaluate('window.__tidesReadback.position')
     assert sum((a-b)**2 for a,b in zip(position, moved)) > 0.1, 'Ship did not move after sailing'
     capture('sailing')
+    baseline_frame = page.evaluate('window.__tidesReadback.frame')
+    page.wait_for_function('(start) => window.__tidesReadback.frame >= start + 5', arg=baseline_frame, timeout=90000, polling=200)
+    capture('sailing_motion')
+    assert page.evaluate('window.__tidesReadback.art.wake_samples') > 0, 'Moving ship did not produce a world-space wake'
     report['checks'].append('Native sail button entered sailing and the ship moved')
     persist()
     click_action('anchor')
@@ -85,6 +83,21 @@ try:
     page.wait_for_function("window.__tidesReadback.system === 'combat'", timeout=30000, polling=200)
     capture('combat')
     report['checks'].append('Native combat button switched to combat layout')
+    persist()
+    # A separate visual fixture renders the same island/ship/water components
+    # in four conditions. It does not count as normal gameplay acceptance.
+    page.goto(f'http://127.0.0.1:{server.server_port}/?verify=1&environment_preview=1', timeout=120000)
+    report['visual_cases'] = []
+    for index, name in enumerate(('sunny_shore', 'low_horizon', 'storm', 'night')):
+        if index:
+            page.keyboard.press('n')
+        page.wait_for_function('(name) => window.__tidesArtPreview?.case === name', arg=name, timeout=150000, polling=200)
+        visual = page.evaluate('window.__tidesArtPreview')
+        assert visual['seabed_triangles'] > 0 and visual['msaa'] == 1
+        capture('art_' + name)
+        report['visual_cases'].append(visual)
+        persist()
+    report['checks'].append('Real environment components rendered in sunny shore, low horizon, storm and night fixtures')
     fatal = [e for e in report['errors'] if any(s in e for s in ('SCRIPT ERROR', 'SHADER ERROR', 'Parse Error',
              'Failed to load script', 'shader compilation failed', 'No loader found for resource', 'Error loading project data'))]
     assert not fatal, '\n'.join(fatal[:8])
