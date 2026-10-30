@@ -16,6 +16,11 @@ report = {'passed': False, 'errors': [], 'checks': [], 'clicks': []}
 def persist():
     (out / 'result.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
 
+def check_fatal():
+    fatal = [e for e in report['errors'] if any(s in e for s in ('SCRIPT ERROR', 'SHADER ERROR', 'Parse Error',
+             'Failed to load script', 'shader compilation failed', 'Shader compilation failed', 'No loader found for resource', 'Error loading project data'))]
+    assert not fatal, '\n'.join(fatal[:8])
+
 p = sync_playwright().start()
 browser = None
 page = None
@@ -34,6 +39,7 @@ try:
         (out / (name + '.png')).write_bytes(base64.b64decode(image['data']))
 
     capture('port')
+    check_fatal()
     lighting = page.evaluate('window.__tidesReadback.lighting')
     assert lighting and lighting['hdr_exposure'] == 1 and lighting['sun_energy'] < 1.1, 'Web lighting profile not active'
     report['lighting'] = lighting
@@ -49,7 +55,7 @@ try:
         buttons = [b for b in data['buttons'] if b['action'] == action and (argument is None or b['argument'] == argument)]
         assert buttons, f'Missing visible native action: {action} {argument}'
         button = buttons[0]
-        rect = page.locator('canvas').bounding_box()
+        rect = page.evaluate("(() => { const r=document.querySelector('canvas').getBoundingClientRect(); return {x:r.x,y:r.y,width:r.width,height:r.height}; })()")
         x = rect['x'] + button['x'] * rect['width'] / data['viewport'][0]
         y = rect['y'] + button['y'] * rect['height'] / data['viewport'][1]
         report['clicks'].append({'action': action, 'argument': argument, 'button': button,
@@ -95,6 +101,7 @@ try:
         visual = page.evaluate('window.__tidesArtPreview')
         assert visual['seabed_triangles'] > 0 and visual['msaa'] == 1
         capture('art_' + name)
+        check_fatal()
         report['visual_cases'].append(visual)
         persist()
     report['checks'].append('Real environment components rendered in sunny shore, low horizon, storm and night fixtures')
