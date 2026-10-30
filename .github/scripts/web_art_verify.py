@@ -22,7 +22,7 @@ def persist():
 
 def check_fatal():
     fatal = [e for e in report['errors'] if any(s in e for s in ('SCRIPT ERROR', 'SHADER ERROR', 'Parse Error',
-             'Failed to load script', 'shader compilation failed', 'Shader compilation failed', 'No loader found for resource', 'Error loading project data'))]
+             'Failed to load script', 'shader compilation failed', 'Shader compilation failed', 'No loader found for resource', 'Error loading project data', 'Maximum call stack size exceeded'))]
     assert not fatal, '\n'.join(fatal[:8])
 
 p = sync_playwright().start()
@@ -115,6 +115,8 @@ try:
         check_panel()
         capture('market_960')
         page.set_viewport_size({'width': 1280, 'height': 720})
+        start = page.evaluate('window.__tidesReadback.frame')
+        page.wait_for_function('(start) => window.__tidesReadback.frame >= start + 2', arg=start, timeout=90000, polling=200)
         page.keyboard.press('Escape')
         page.wait_for_function('!window.__tidesReadback.ui.popup_visible', timeout=60000, polling=200)
         click_action('map')
