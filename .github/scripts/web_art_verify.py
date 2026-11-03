@@ -175,7 +175,6 @@ try:
         persist()
         wait_state('window.__tidesReadback.ui.charge_side === 0 && window.__tidesReadback.impact_preview?.active')
         check_panel()
-        capture('left_charge')
         first = page.evaluate('window.__tidesReadback')
         report['impact_low'] = first['impact_preview']
         wait_state('window.__tidesReadback.ui.charge >= 1.35 && window.__tidesReadback.impact_preview.visible')
@@ -202,7 +201,6 @@ try:
         move_aim('left_turn_aim')
         wait_state(f'Math.hypot(window.__tidesReadback.impact_preview.center[0] - ({before_center[0]}), window.__tidesReadback.impact_preview.center[1] - ({before_center[1]})) > 8')
         report['pointer_angle_forecast'] = page.evaluate('window.__tidesReadback.impact_preview')
-        capture('charge_angle_changed')
 
         # Zoom is a deliberate player action. The free camera does not force
         # all long-range landing points into the default close ship view.
@@ -223,7 +221,6 @@ try:
         report['left_reload_after_fire'] = ui
         report['checks'].append('Normal Q input moves the real ballistic forecast, displays full-charge gun marks on sea, fires and clears preview; independent left/right reload is retained')
         persist()
-        capture('left_reload')
         wait_state('window.__tidesReadback.impact_preview.camera_lift < .2')
         move_aim('right_aim')
         page.keyboard.down('e')
@@ -242,23 +239,24 @@ try:
         assert right['impact_preview']['surface_outline_count'] >= 3
         assert right['impact_preview']['camera_distance_setting'] == report['manual_zoom_forecast']['camera_distance_setting'], 'Manual zoom must survive release and charging the other side'
         assert 0 < right['impact_preview']['camera_lift'] <= 10.001
-        capture('right_charge_full')
+        persist()
         # Exercise the normal right-button drag, including vertical orbit input.
         prior_pitch = right['impact_preview']['camera_pitch']
         prior_yaw = right['impact_preview']['camera_yaw']
         page.mouse.move(480, 240)
         page.mouse.down(button='right')
-        page.mouse.move(540, 252, steps=6)
+        page.mouse.move(540, 252, steps=2)
         page.mouse.up(button='right')
         wait_state(f'Math.abs(window.__tidesReadback.impact_preview.camera_yaw - ({prior_yaw})) > .1 && Math.abs(window.__tidesReadback.impact_preview.camera_pitch - ({prior_pitch})) > .02')
         report['right_drag_forecast'] = page.evaluate('window.__tidesReadback.impact_preview')
+        persist()
         capture('charge_free_drag')
         move_aim('right_aim')
         page.keyboard.up('e')
         wait_state('window.__tidesReadback.ui.right_reload > 0 && window.__tidesReadback.ui.charge_side === -1 && !window.__tidesReadback.impact_preview.active')
         report['right_reload_after_fire'] = page.evaluate('window.__tidesReadback.ui')
         report['checks'].append('Charging keeps the free orbit and user zoom with at most 10m lift; full-power pointer angle changes move the sea footprint; stationary-pointer aim updates after keyboard camera rotation; right-button drag controls yaw and pitch during charging; Q/E retain independent reload')
-        capture('right_reload')
+        persist()
     else:
         page.goto(f'http://127.0.0.1:{server.server_port}/?verify=1&environment_preview=1', timeout=120000)
         report['visual_cases'] = []
