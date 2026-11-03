@@ -162,6 +162,7 @@ try:
         wait_state('window.__tidesReadback.ui.charge >= 1.35 && window.__tidesReadback.impact_preview.visible')
         full = page.evaluate('window.__tidesReadback')
         report['impact_high'] = full['impact_preview']
+        assert full['impact_preview']['surface_outline_count'] >= 3, 'Web sea shader must receive the forecast outline'
         history = full['impact_history']
         report['impact_history'] = history
         assert len(history) >= 2, 'Charge must produce more than one forecast observation'
