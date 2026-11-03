@@ -154,17 +154,31 @@ try:
         page.keyboard.down('q')
         report['stage'] = 'waiting_for_left_charge'
         persist()
-        wait_state('window.__tidesReadback.ui.charge_side === 0 && window.__tidesReadback.ui.charge > 0.02')
+        wait_state('window.__tidesReadback.ui.charge_side === 0 && window.__tidesReadback.impact_preview?.active')
         check_panel()
         capture('left_charge')
+        first = page.evaluate('window.__tidesReadback')
+        report['impact_low'] = first['impact_preview']
+        wait_state('window.__tidesReadback.ui.charge >= 1.35 && window.__tidesReadback.impact_preview.visible')
+        full = page.evaluate('window.__tidesReadback')
+        report['impact_high'] = full['impact_preview']
+        history = full['impact_history']
+        report['impact_history'] = history
+        assert len(history) >= 2, 'Charge must produce more than one forecast observation'
+        assert history[-1]['range'] > history[0]['range'] + 10, 'Landing range must move outward as power increases'
+        assert history[-1]['power'] > history[0]['power'], 'Charge forecast must use live power'
+        visible_points = full['impact_preview']['screen_points']
+        assert visible_points and all(0 <= q[0] <= full['viewport'][0] and 0 <= q[1] <= full['viewport'][1] * .72 for q in visible_points), 'Full-charge landing markers must remain on visible sea'
+        capture('left_charge_full')
         page.keyboard.up('q')
         report['stage'] = 'waiting_for_left_reload_after_release'
         persist()
         wait_state('window.__tidesReadback.ui.left_reload > 0 && window.__tidesReadback.ui.charge_side === -1')
         ui = page.evaluate('window.__tidesReadback.ui')
         assert ui['right_reload'] == 0 and ui['reload_time'] > 0
+        assert not page.evaluate('window.__tidesReadback.impact_preview.active'), 'Release must clear forecast'
         report['left_reload_after_fire'] = ui
-        report['checks'].append('Q charges and fires from normal startup; left reload is positive while right remains ready; independent reload duration is retained')
+        report['checks'].append('Normal Q input moves the real ballistic forecast, displays full-charge gun marks on sea, fires and clears preview; independent left/right reload is retained')
         persist()
         capture('left_reload')
     else:
