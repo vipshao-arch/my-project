@@ -206,6 +206,7 @@ try:
 
         # Zoom is a deliberate player action. The free camera does not force
         # all long-range landing points into the default close ship view.
+        page.mouse.move(480, 240)
         for _ in range(10):
             page.mouse.wheel(0, 120)
         wait_state(f'window.__tidesReadback.impact_preview.camera_distance_setting >= {baseline["camera_distance_setting"] + 450}')
