@@ -6,7 +6,7 @@ import subprocess
 from pathlib import Path
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--mode', choices=('gameplay', 'visual'), required=True)
+parser.add_argument('--mode', choices=('gameplay', 'visual', 'ui_panels'), required=True)
 parser.add_argument('--source-run', required=True)
 args = parser.parse_args()
 repo = os.environ['GITHUB_REPOSITORY']
@@ -29,10 +29,10 @@ reusable = previous_tree == current_tree
 if reusable:
     comparison = api(f"compare/{run['head_sha']}...{current}")
     assert comparison['status'] in ('identical', 'ahead')
-    job_name = 'package' if args.mode == 'gameplay' else 'environment-art'
+    job_name = {'gameplay': 'package', 'visual': 'environment-art', 'ui_panels': 'interface-art'}[args.mode]
     jobs = api(f'actions/runs/{args.source_run}/jobs')['jobs']
     assert any(job['name'] == job_name and job['conclusion'] == 'success' for job in jobs)
-    artifact = 'web-gameplay-evidence' if args.mode == 'gameplay' else 'web-environment-evidence'
+    artifact = {'gameplay': 'web-gameplay-evidence', 'visual': 'web-environment-evidence', 'ui_panels': 'web-interface-evidence'}[args.mode]
     subprocess.run(['gh', 'run', 'download', args.source_run, '--repo', repo,
                     '--name', artifact, '--dir', 'test-results'], check=True)
     result = json.loads(Path('test-results/result.json').read_text(encoding='utf-8'))

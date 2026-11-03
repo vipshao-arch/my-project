@@ -30,7 +30,9 @@ browser = None
 page = None
 try:
     browser = p.chromium.launch(headless=True, args=['--use-angle=swiftshader', '--enable-unsafe-swiftshader'])
-    page = browser.new_page(viewport={'width': 1280, 'height': 720})
+    test_viewport = {'width': 960, 'height': 540} if mode == 'ui_combat' else {'width': 1280, 'height': 720}
+    page = browser.new_page(viewport=test_viewport)
+    report['browser_viewport'] = test_viewport
     page.on('console', lambda msg: report['errors'].append(msg.text[:4000]) if msg.type == 'error' else None)
     page.on('pageerror', lambda err: report['errors'].append(str(err)))
     page.on('crash', lambda: report['errors'].append('Browser page crashed'))
@@ -62,6 +64,19 @@ try:
             assert ui['popup_size'][0] * ui['popup_size'][1] <= data['viewport'][0] * data['viewport'][1] * 0.5 + 1
         report.setdefault('ui_cases', []).append({'viewport': data['viewport'], **ui})
         persist()
+
+    def wait_state(expression, timeout=120000):
+        try:
+            page.wait_for_function(expression, timeout=timeout, polling=1000)
+        except Exception:
+            # Software WebGL can return the state only after its long frame
+            # finishes. Accept a fresh observation of the SAME predicate;
+            # never repeat the input or turn a missing state into success.
+            observed = page.evaluate(expression)
+            report.setdefault('delayed_observations', []).append({'predicate': expression, 'matched': bool(observed)})
+            persist()
+            if not observed:
+                raise
 
     if mode == 'gameplay':
         page.goto(f'http://127.0.0.1:{server.server_port}/?verify=1', timeout=120000)
@@ -129,19 +144,23 @@ try:
         persist()
     elif mode == 'ui_combat':
         page.goto(f'http://127.0.0.1:{server.server_port}/?verify=1', timeout=120000)
-        page.wait_for_function('window.__tidesReadback?.state === 1', timeout=120000, polling=200)
+        wait_state('window.__tidesReadback?.state === 1')
         click_action('sail')
-        page.wait_for_function('window.__tidesReadback.state === 0', timeout=90000, polling=200)
+        wait_state('window.__tidesReadback.state === 0')
         data = page.evaluate('window.__tidesReadback')
         aim = data['ui']['left_aim']
         rect = page.evaluate("(() => { const r=document.querySelector('canvas').getBoundingClientRect(); return {x:r.x,y:r.y,width:r.width,height:r.height}; })()")
         page.mouse.move(rect['x'] + aim[0] * rect['width'] / data['viewport'][0], rect['y'] + aim[1] * rect['height'] / data['viewport'][1])
         page.keyboard.down('q')
-        page.wait_for_function('window.__tidesReadback.ui.charge_side === 0 && window.__tidesReadback.ui.charge > 0.02', timeout=60000, polling=200)
+        report['stage'] = 'waiting_for_left_charge'
+        persist()
+        wait_state('window.__tidesReadback.ui.charge_side === 0 && window.__tidesReadback.ui.charge > 0.02')
         check_panel()
         capture('left_charge')
         page.keyboard.up('q')
-        page.wait_for_function('window.__tidesReadback.ui.left_reload > 0 && window.__tidesReadback.ui.charge_side === -1', timeout=60000, polling=100)
+        report['stage'] = 'waiting_for_left_reload_after_release'
+        persist()
+        wait_state('window.__tidesReadback.ui.left_reload > 0 && window.__tidesReadback.ui.charge_side === -1')
         ui = page.evaluate('window.__tidesReadback.ui')
         assert ui['right_reload'] == 0 and ui['reload_time'] > 0
         report['left_reload_after_fire'] = ui

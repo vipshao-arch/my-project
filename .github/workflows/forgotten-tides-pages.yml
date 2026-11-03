@@ -106,11 +106,18 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - name: Reuse successful panel evidence only for identical game files
+        id: evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/reuse_web_evidence.py --mode ui_panels --source-run 41567742236
       - name: Install isolated browser test dependencies
+        if: steps.evidence.outputs.reusable != 'true'
         run: |
           pip install playwright psutil
           python -m playwright install --with-deps chromium
       - name: Verify business panels and world chart in a fresh browser
+        if: steps.evidence.outputs.reusable != 'true'
         run: python .github/scripts/web_art_verify.py --mode ui_panels
         timeout-minutes: 12
       - name: Save interface evidence
@@ -133,7 +140,7 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Verify Q charge, release and independent broadside reload
         run: python .github/scripts/web_art_verify.py --mode ui_combat
-        timeout-minutes: 10
+        timeout-minutes: 12
       - name: Save combat interface evidence
         if: always()
         uses: actions/upload-artifact@v4
