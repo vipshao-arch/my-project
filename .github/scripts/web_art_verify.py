@@ -49,8 +49,13 @@ try:
         assert buttons, f'Missing visible native action: {action} {argument}'
         button = buttons[0]
         rect = page.evaluate("(() => { const r=document.querySelector('canvas').getBoundingClientRect(); return {x:r.x,y:r.y,width:r.width,height:r.height}; })()")
-        x = rect['x'] + button['x'] * rect['width'] / data['viewport'][0]
-        y = rect['y'] + button['y'] * rect['height'] / data['viewport'][1]
+        # Godot's keep-aspect viewport can letterbox inside the canvas bounds.
+        # Use the actual game content rectangle, not the outer black margins.
+        scale = min(rect['width'] / data['viewport'][0], rect['height'] / data['viewport'][1])
+        game_x = rect['x'] + (rect['width'] - data['viewport'][0] * scale) * .5
+        game_y = rect['y'] + (rect['height'] - data['viewport'][1] * scale) * .5
+        x = game_x + button['x'] * scale
+        y = game_y + button['y'] * scale
         report['clicks'].append({'action': action, 'argument': argument, 'button': button, 'screen': [x, y]})
         persist()
         page.mouse.click(x, y)
