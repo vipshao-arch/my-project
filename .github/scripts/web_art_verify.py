@@ -182,6 +182,28 @@ try:
         report['checks'].append('Normal Q input moves the real ballistic forecast, displays full-charge gun marks on sea, fires and clears preview; independent left/right reload is retained')
         persist()
         capture('left_reload')
+        data = page.evaluate('window.__tidesReadback')
+        aim = data['ui']['right_aim']
+        page.mouse.move(rect['x'] + aim[0] * rect['width'] / data['viewport'][0], rect['y'] + aim[1] * rect['height'] / data['viewport'][1])
+        page.keyboard.down('e')
+        report['stage'] = 'waiting_for_right_charge'
+        persist()
+        wait_state('window.__tidesReadback.ui.charge_side === 1 && window.__tidesReadback.impact_preview.active')
+        before_yaw = page.evaluate('window.__tidesReadback.impact_preview.camera_yaw')
+        page.keyboard.down('ArrowRight')
+        wait_state(f'Math.abs(window.__tidesReadback.impact_preview.camera_yaw - ({before_yaw})) > .05')
+        page.keyboard.up('ArrowRight')
+        wait_state('window.__tidesReadback.ui.charge >= 1.35 && window.__tidesReadback.impact_preview.visible')
+        right = page.evaluate('window.__tidesReadback')
+        report['right_impact_high'] = right['impact_preview']
+        assert right['impact_preview']['surface_outline_count'] >= 3
+        assert all(0 <= q[0] <= right['viewport'][0] and 0 <= q[1] <= right['viewport'][1] * .72 for q in right['impact_preview']['screen_points']), 'Right broadside markers must stay above the combat panel after camera rotation'
+        capture('right_charge_full')
+        page.keyboard.up('e')
+        wait_state('window.__tidesReadback.ui.right_reload > 0 && window.__tidesReadback.ui.charge_side === -1 && !window.__tidesReadback.impact_preview.active')
+        report['right_reload_after_fire'] = page.evaluate('window.__tidesReadback.ui')
+        report['checks'].append('E uses the corresponding sea forecast, permits camera rotation while charging, and starts its own reload after release')
+        capture('right_reload')
     else:
         page.goto(f'http://127.0.0.1:{server.server_port}/?verify=1&environment_preview=1', timeout=120000)
         report['visual_cases'] = []

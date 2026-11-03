@@ -140,7 +140,7 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Verify Q charge, release and independent broadside reload
         run: python .github/scripts/web_art_verify.py --mode ui_combat
-        timeout-minutes: 12
+        timeout-minutes: 18
       - name: Save combat interface evidence
         if: always()
         uses: actions/upload-artifact@v4
