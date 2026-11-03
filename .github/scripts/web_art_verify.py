@@ -9,7 +9,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--mode', choices=('gameplay', 'visual', 'ui'), default='gameplay')
+parser.add_argument('--mode', choices=('gameplay', 'visual', 'ui', 'ui_panels', 'ui_combat'), default='gameplay')
 mode = parser.parse_args().mode
 out = Path('test-results')
 out.mkdir(exist_ok=True)
@@ -37,7 +37,7 @@ try:
     session = page.context.new_cdp_session(page)
 
     def capture(name):
-        image = session.send('Page.captureScreenshot', {'format': 'png', 'fromSurface': True})
+        image = session.send('Page.captureScreenshot', {'format': 'png', 'fromSurface': True, 'optimizeForSpeed': True})
         (out / (name + '.png')).write_bytes(base64.b64decode(image['data']))
         check_fatal()
 
@@ -102,7 +102,7 @@ try:
         report['checks'].append('Native combat button switched to combat layout')
         check_panel()
         assert page.evaluate('window.__tidesReadback.ui.merged_navigation && !window.__tidesReadback.ui.weather_card_visible')
-    elif mode == 'ui':
+    elif mode in ('ui', 'ui_panels'):
         page.goto(f'http://127.0.0.1:{server.server_port}/?verify=1', timeout=120000)
         page.wait_for_function('window.__tidesReadback?.state === 1', timeout=120000, polling=200)
         click_action('tab', 'market')
@@ -125,6 +125,11 @@ try:
         capture('map')
         page.keyboard.press('Escape')
         page.wait_for_function('window.__tidesReadback.state === 1', timeout=60000, polling=200)
+        report['checks'].append('Market panels fit at two browser sizes with no clipped native captions; real world chart opens and closes')
+        persist()
+    elif mode == 'ui_combat':
+        page.goto(f'http://127.0.0.1:{server.server_port}/?verify=1', timeout=120000)
+        page.wait_for_function('window.__tidesReadback?.state === 1', timeout=120000, polling=200)
         click_action('sail')
         page.wait_for_function('window.__tidesReadback.state === 0', timeout=90000, polling=200)
         data = page.evaluate('window.__tidesReadback')
@@ -140,9 +145,9 @@ try:
         ui = page.evaluate('window.__tidesReadback.ui')
         assert ui['right_reload'] == 0 and ui['reload_time'] > 0
         report['left_reload_after_fire'] = ui
+        report['checks'].append('Q charges and fires from normal startup; left reload is positive while right remains ready; independent reload duration is retained')
         persist()
         capture('left_reload')
-        report['checks'].append('Market panels fit at two browser sizes; real map opens and closes; Q charges/fires with independent left reload and unchanged right readiness')
     else:
         page.goto(f'http://127.0.0.1:{server.server_port}/?verify=1&environment_preview=1', timeout=120000)
         report['visual_cases'] = []

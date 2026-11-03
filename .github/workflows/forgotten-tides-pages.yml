@@ -8,10 +8,12 @@ on:
       - '.github/workflows/forgotten-tides-pages.yml'
       - '.github/scripts/web_smoke.py'
       - '.github/scripts/web_art_verify.py'
+      - '.github/scripts/reuse_web_evidence.py'
   workflow_dispatch:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: forgotten-tides-pages
@@ -45,11 +47,18 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - name: Reuse successful gameplay evidence only for identical game files
+        id: evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/reuse_web_evidence.py --mode gameplay --source-run 41026347035
       - name: Install isolated browser test dependencies
+        if: steps.evidence.outputs.reusable != 'true'
         run: |
           pip install playwright psutil
           python -m playwright install --with-deps chromium
       - name: Verify browser gameplay before publication
+        if: steps.evidence.outputs.reusable != 'true'
         run: python .github/scripts/web_art_verify.py --mode gameplay
         timeout-minutes: 14
       - name: Save browser evidence
@@ -69,11 +78,18 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - name: Reuse successful environment evidence only for identical game files
+        id: evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/reuse_web_evidence.py --mode visual --source-run 41026347035
       - name: Install isolated browser test dependencies
+        if: steps.evidence.outputs.reusable != 'true'
         run: |
           pip install playwright psutil
           python -m playwright install --with-deps chromium
       - name: Verify four environment conditions in a fresh browser
+        if: steps.evidence.outputs.reusable != 'true'
         run: python .github/scripts/web_art_verify.py --mode visual
         timeout-minutes: 14
       - name: Save environment evidence
@@ -94,9 +110,9 @@ jobs:
         run: |
           pip install playwright psutil
           python -m playwright install --with-deps chromium
-      - name: Verify native panels and charged broadside presentation
-        run: python .github/scripts/web_art_verify.py --mode ui
-        timeout-minutes: 16
+      - name: Verify business panels and world chart in a fresh browser
+        run: python .github/scripts/web_art_verify.py --mode ui_panels
+        timeout-minutes: 12
       - name: Save interface evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -104,9 +120,30 @@ jobs:
           name: web-interface-evidence
           path: test-results
 
+  combat-interface:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install isolated browser test dependencies
+        run: |
+          pip install playwright psutil
+          python -m playwright install --with-deps chromium
+      - name: Verify Q charge, release and independent broadside reload
+        run: python .github/scripts/web_art_verify.py --mode ui_combat
+        timeout-minutes: 10
+      - name: Save combat interface evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-combat-interface-evidence
+          path: test-results
+
   deploy:
     if: github.ref == 'refs/heads/main'
-    needs: [package, environment-art, interface-art]
+    needs: [package, environment-art, interface-art, combat-interface]
     runs-on: ubuntu-latest
     permissions:
       pages: write
