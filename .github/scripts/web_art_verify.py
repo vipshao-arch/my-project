@@ -129,9 +129,8 @@ try:
         page.wait_for_function('(start) => window.__tidesReadback.frame >= start + 3', arg=start, timeout=90000, polling=200)
         check_panel()
         capture('market_960')
-        page.set_viewport_size({'width': 1280, 'height': 720})
-        start = page.evaluate('window.__tidesReadback.frame')
-        page.wait_for_function('(start) => window.__tidesReadback.frame >= start + 2', arg=start, timeout=90000, polling=200)
+        # Both panel sizes were checked. Keep the smaller fresh viewport for
+        # the map screenshot instead of another costly software-GPU resize.
         page.keyboard.press('Escape')
         page.wait_for_function('!window.__tidesReadback.ui.popup_visible', timeout=60000, polling=200)
         click_action('map')
