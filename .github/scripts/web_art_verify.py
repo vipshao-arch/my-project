@@ -2,6 +2,7 @@ import argparse
 import base64
 import functools
 import json
+import math
 import threading
 import psutil
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -151,10 +152,24 @@ try:
         wait_state('window.__tidesReadback?.state === 1')
         click_action('sail')
         wait_state('window.__tidesReadback.state === 0')
-        data = page.evaluate('window.__tidesReadback')
-        aim = data['ui']['left_aim']
-        rect = page.evaluate("(() => { const r=document.querySelector('canvas').getBoundingClientRect(); return {x:r.x,y:r.y,width:r.width,height:r.height}; })()")
-        page.mouse.move(rect['x'] + aim[0] * rect['width'] / data['viewport'][0], rect['y'] + aim[1] * rect['height'] / data['viewport'][1])
+        click_action('anchor')
+        wait_state('window.__tidesReadback.anchored && window.__tidesReadback.speed === 0')
+        # Finish the normal port-to-ship transition before comparing camera motion.
+        wait_state('Math.hypot(...window.__tidesReadback.impact_preview.camera_ship_offset) < 190')
+
+        def move_aim(key):
+            data = page.evaluate('window.__tidesReadback')
+            aim = data['ui'][key]
+            bounds = page.evaluate("(() => { const r=document.querySelector('canvas').getBoundingClientRect(); return {x:r.x,y:r.y,width:r.width,height:r.height}; })()")
+            scale = min(bounds['width'] / data['viewport'][0], bounds['height'] / data['viewport'][1])
+            x = bounds['x'] + (bounds['width'] - data['viewport'][0] * scale) * .5 + aim[0] * scale
+            y = bounds['y'] + (bounds['height'] - data['viewport'][1] * scale) * .5 + aim[1] * scale
+            page.mouse.move(x, y)
+
+        baseline = page.evaluate('window.__tidesReadback.impact_preview')
+        report['camera_baseline'] = baseline
+        capture('camera_before_charge')
+        move_aim('left_aim')
         page.keyboard.down('q')
         report['stage'] = 'waiting_for_left_charge'
         persist()
@@ -172,8 +187,30 @@ try:
         assert len(history) >= 2, 'Charge must produce more than one forecast observation'
         assert history[-1]['range'] > history[0]['range'] + 10, 'Landing range must move outward as power increases'
         assert history[-1]['power'] > history[0]['power'], 'Charge forecast must use live power'
-        visible_points = full['impact_preview']['screen_points']
-        assert visible_points and all(0 <= q[0] <= full['viewport'][0] and 0 <= q[1] <= full['viewport'][1] * .72 for q in visible_points), 'Full-charge landing markers must remain on visible sea'
+        forecast = full['impact_preview']
+        assert forecast['camera_distance_setting'] == baseline['camera_distance_setting'], 'Charging must not change the user zoom'
+        assert abs(forecast['camera_yaw'] - baseline['camera_yaw']) < .001 and abs(forecast['camera_pitch'] - baseline['camera_pitch']) < .001, 'Charging must not redirect the orbit'
+        assert 0 < forecast['camera_lift'] <= 10.001, 'Charge lift is limited to ten meters'
+        horizontal = math.hypot(forecast['camera_ship_offset'][0], forecast['camera_ship_offset'][2])
+        assert abs(horizontal - baseline['camera_distance_setting'] * math.cos(baseline['camera_pitch'])) < 5, 'Charge must not center camera between ship and landing'
+        assert all(x['camera_distance_setting'] == baseline['camera_distance_setting'] and 0 <= x['camera_lift'] <= 10.001 for x in history)
+        capture('charge_default_zoom')
+
+        # Move the pointer at full power: angle changes must reshape the actual
+        # sea footprint, independently of the charge timer or ship movement.
+        before_center = forecast['center']
+        move_aim('left_turn_aim')
+        wait_state(f'Math.hypot(window.__tidesReadback.impact_preview.center[0] - ({before_center[0]}), window.__tidesReadback.impact_preview.center[1] - ({before_center[1]})) > 8')
+        report['pointer_angle_forecast'] = page.evaluate('window.__tidesReadback.impact_preview')
+        capture('charge_angle_changed')
+
+        # Zoom is a deliberate player action. The free camera does not force
+        # all long-range landing points into the default close ship view.
+        for _ in range(10):
+            page.mouse.wheel(0, 120)
+        wait_state(f'window.__tidesReadback.impact_preview.camera_distance_setting >= {baseline["camera_distance_setting"] + 450}')
+        move_aim('left_aim')
+        report['manual_zoom_forecast'] = page.evaluate('window.__tidesReadback.impact_preview')
         capture('left_charge_full')
         page.keyboard.up('q')
         report['stage'] = 'waiting_for_left_reload_after_release'
@@ -186,27 +223,40 @@ try:
         report['checks'].append('Normal Q input moves the real ballistic forecast, displays full-charge gun marks on sea, fires and clears preview; independent left/right reload is retained')
         persist()
         capture('left_reload')
-        data = page.evaluate('window.__tidesReadback')
-        aim = data['ui']['right_aim']
-        page.mouse.move(rect['x'] + aim[0] * rect['width'] / data['viewport'][0], rect['y'] + aim[1] * rect['height'] / data['viewport'][1])
+        wait_state('window.__tidesReadback.impact_preview.camera_lift < .2')
+        move_aim('right_aim')
         page.keyboard.down('e')
         report['stage'] = 'waiting_for_right_charge'
         persist()
         wait_state('window.__tidesReadback.ui.charge_side === 1 && window.__tidesReadback.impact_preview.active')
         before_yaw = page.evaluate('window.__tidesReadback.impact_preview.camera_yaw')
+        before_aim = page.evaluate('window.__tidesReadback.impact_preview.aim')
         page.keyboard.down('ArrowRight')
         wait_state(f'Math.abs(window.__tidesReadback.impact_preview.camera_yaw - ({before_yaw})) > .05')
         page.keyboard.up('ArrowRight')
+        wait_state(f'Math.hypot(window.__tidesReadback.impact_preview.aim[0] - ({before_aim[0]}), window.__tidesReadback.impact_preview.aim[1] - ({before_aim[1]})) > 1')
         wait_state('window.__tidesReadback.ui.charge >= 1.35 && window.__tidesReadback.impact_preview.visible')
         right = page.evaluate('window.__tidesReadback')
         report['right_impact_high'] = right['impact_preview']
         assert right['impact_preview']['surface_outline_count'] >= 3
-        assert all(0 <= q[0] <= right['viewport'][0] and 0 <= q[1] <= right['viewport'][1] * .72 for q in right['impact_preview']['screen_points']), 'Right broadside markers must stay above the combat panel after camera rotation'
+        assert right['impact_preview']['camera_distance_setting'] == report['manual_zoom_forecast']['camera_distance_setting'], 'Manual zoom must survive release and charging the other side'
+        assert 0 < right['impact_preview']['camera_lift'] <= 10.001
         capture('right_charge_full')
+        # Exercise the normal right-button drag, including vertical orbit input.
+        prior_pitch = right['impact_preview']['camera_pitch']
+        prior_yaw = right['impact_preview']['camera_yaw']
+        page.mouse.move(480, 240)
+        page.mouse.down(button='right')
+        page.mouse.move(540, 252, steps=6)
+        page.mouse.up(button='right')
+        wait_state(f'Math.abs(window.__tidesReadback.impact_preview.camera_yaw - ({prior_yaw})) > .1 && Math.abs(window.__tidesReadback.impact_preview.camera_pitch - ({prior_pitch})) > .02')
+        report['right_drag_forecast'] = page.evaluate('window.__tidesReadback.impact_preview')
+        capture('charge_free_drag')
+        move_aim('right_aim')
         page.keyboard.up('e')
         wait_state('window.__tidesReadback.ui.right_reload > 0 && window.__tidesReadback.ui.charge_side === -1 && !window.__tidesReadback.impact_preview.active')
         report['right_reload_after_fire'] = page.evaluate('window.__tidesReadback.ui')
-        report['checks'].append('E uses the corresponding sea forecast, permits camera rotation while charging, and starts its own reload after release')
+        report['checks'].append('Charging keeps the free orbit and user zoom with at most 10m lift; full-power pointer angle changes move the sea footprint; stationary-pointer aim updates after keyboard camera rotation; right-button drag controls yaw and pitch during charging; Q/E retain independent reload')
         capture('right_reload')
     else:
         page.goto(f'http://127.0.0.1:{server.server_port}/?verify=1&environment_preview=1', timeout=120000)
