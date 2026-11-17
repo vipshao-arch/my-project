@@ -1,0 +1,40 @@
+name: Deploy maritime handbook
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "manual/**"
+      - ".github/workflows/deploy-handbook.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: forgotten-tides-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Add handbook beside the unchanged game demo
+        run: |
+          test -f tides/index.html
+          test -f manual/index.html
+          mkdir -p tides/manual
+          cp -R manual/. tides/manual/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: tides
+      - name: Deploy game and handbook
+        id: deployment
+        uses: actions/deploy-pages@v4
