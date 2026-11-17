@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "manual/**"
+      - "tides/**"
       - ".github/workflows/deploy-handbook.yml"
   workflow_dispatch:
 

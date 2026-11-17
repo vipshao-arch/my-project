@@ -111,7 +111,7 @@ body {
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":86965480,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":158901820,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -133,10 +133,10 @@ async function startPackedGame(options) {
     options.onProgress(loaded, manifest.bytes);
     return bytes;
   }));
-  const pack = new Uint8Array(manifest.bytes);
-  let offset = 0;
-  for (const buffer of buffers) { pack.set(buffer, offset); offset += buffer.length; }
-  await engine.preloadFile(pack, 'index.pck');
+  const blob = new Blob(buffers, {type: 'application/octet-stream'});
+  const packUrl = URL.createObjectURL(blob);
+  await engine.preloadFile(packUrl, 'index.pck');
+  URL.revokeObjectURL(packUrl);
   await initialize;
   const args = ['--main-pack', 'index.pck'];
   return engine.start({...options, args});
