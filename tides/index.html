@@ -127,7 +127,6 @@ async function fetchPart(part, index, totalParts, options, completedBytes) {
       const url = `${part.name}?v=${part.sha256.slice(0, 16)}&retry=${attempt}`;
       const response = await fetch(url, {cache: 'no-store'});
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const declared = Number(response.headers.get('content-length')) || part.bytes;
       const reader = response.body ? response.body.getReader() : null;
       let bytes;
       if (reader) {
@@ -150,7 +149,7 @@ async function fetchPart(part, index, totalParts, options, completedBytes) {
         bytes = new Uint8Array(await response.arrayBuffer());
         options.onProgress(completedBytes + part.bytes, options.totalBytes);
       }
-      if (bytes.length !== part.bytes || declared !== part.bytes) {
+      if (bytes.length !== part.bytes) {
         throw new Error(`文件长度 ${bytes.length}，期望 ${part.bytes}`);
       }
       const digest = await sha256Hex(bytes);

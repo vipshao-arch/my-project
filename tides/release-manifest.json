@@ -1,7 +1,7 @@
 {
   "game": "遗忘潮汐",
   "repository": "vipshao-arch/my-project",
-  "prepared_at": "2026-11-18T03:36:22.681658+00:00",
+  "prepared_at": "2026-11-18T09:11:11.900724+00:00",
   "build": "procedural-web-20261118",
   "files": [
     {
@@ -31,8 +31,8 @@
     },
     {
       "name": "index.html",
-      "size": 9061,
-      "sha256": "b9395c0ca52af0d1c1c13d490b382c9eb908e4cf31051aca9b6bb65714763c67"
+      "size": 9253,
+      "sha256": "06ca6286ce4a8348792602cb9e21ab5ab65ea3e5e4ac53f6c294ed1b68621890"
     },
     {
       "name": "index.icon.png",
