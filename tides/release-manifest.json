@@ -1,13 +1,23 @@
 {
   "game": "遗忘潮汐",
   "repository": "vipshao-arch/my-project",
-  "prepared_at": "2026-11-18T10:40:01.131184+00:00",
+  "prepared_at": "2026-11-23T04:15:59.617601+00:00",
   "build": "procedural-web-20261118",
   "files": [
     {
       "name": ".nojekyll",
       "size": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "debug.html",
+      "size": 10536,
+      "sha256": "3ff473c6e47dd20341a50959922bc097c485cb22ddefd1edb0bfd73b954163b3"
+    },
+    {
+      "name": "debug_console.html",
+      "size": 10995,
+      "sha256": "cc997caa93a189329da4e390d1e22d9cbdbd433441df3d016eefbe868f398085"
     },
     {
       "name": "FONT-LICENSE.txt",
@@ -18,6 +28,11 @@
       "name": "index.apple-touch-icon.png",
       "size": 13842,
       "sha256": "a470efe5e2206a10a2bbc534db68f8c863d2a97dcf3914ec544de8d1c9ed9b16"
+    },
+    {
+      "name": "index.apple-touch-icon.png.import",
+      "size": 980,
+      "sha256": "b82211e768d940ee472c6877190244b083e8b3f41be3fbaf9c8ca130bdb7d04a"
     },
     {
       "name": "index.audio.position.worklet.js",
@@ -32,12 +47,17 @@
     {
       "name": "index.html",
       "size": 9251,
-      "sha256": "be351636f1edae31a8d5d647f5611e0f3e2d4137157609c7f536dbd382a84017"
+      "sha256": "0ee6e505a5f91a793e04d3ad560d2806a32919f594fe55245914dbe41cf54229"
     },
     {
       "name": "index.icon.png",
       "size": 6028,
       "sha256": "6f8786de3aaf15f608a183313316a2dc10fb1ffe5970d54c3eb6bc62726fbfde"
+    },
+    {
+      "name": "index.icon.png.import",
+      "size": 944,
+      "sha256": "e20fbdd63c6ee47d448b0f8f0130566a99dd51adaa83802d3b5f69e35e26611a"
     },
     {
       "name": "index.js",
@@ -47,47 +67,52 @@
     {
       "name": "index.pck.part00",
       "size": 25165824,
-      "sha256": "181f3ece1a85753667f5788603ed4736f77e85324ae97c53318ddb3857d2df5a"
+      "sha256": "cf0643c7038c4e13e5658e481ba8789ef911f8b810aa7e3f6c7ce57a6caaf655"
     },
     {
       "name": "index.pck.part01",
       "size": 25165824,
-      "sha256": "825581523d8e5f652e9d383296e14bc56870475aa549807bcfe3112fea12416c"
+      "sha256": "d20a37d9d980ab28316701449bb88a4014272534ddd34a8db858498e6530e1c9"
     },
     {
       "name": "index.pck.part02",
       "size": 25165824,
-      "sha256": "c7c10170f4793b8d055ea2d777b88941cd40aaaa21440783349463cd05c4fda3"
+      "sha256": "ffdce3d5a8a2dce804a30d981c3a3f437d46e35f0351f58582c59340518a28df"
     },
     {
       "name": "index.pck.part03",
       "size": 25165824,
-      "sha256": "0247edbc4c89307e37b19ced4c059ef9327ec809fb7e4a37fba1788c2abb72a7"
+      "sha256": "bd7a76f2d71040e99795c72093bcb0ca62f95e4e87f269b066ba0e03a8c93188"
     },
     {
       "name": "index.pck.part04",
       "size": 25165824,
-      "sha256": "aa68ffe1958ea87e8737108ed47eeafac3081ee7bd4ddef6f7f8d743098ae90d"
+      "sha256": "1581df11f478c3793c3e07ee428ff32304d18c9be8f6ffa3c4c853561e3d1310"
     },
     {
       "name": "index.pck.part05",
       "size": 25165824,
-      "sha256": "3a633155008967504d5c86046d2f5571741bf933c4479861ca5188363bc078d3"
+      "sha256": "6ff35d8ad2baff217dfd6f433403aee44079a20fd36bbd4294ee94b1a2205b8a"
     },
     {
       "name": "index.pck.part06",
-      "size": 7937656,
-      "sha256": "5d2395241fdf4dc905d8efc901edf2c1617935dd427037571dbffbc2b22dc294"
+      "size": 7973703,
+      "sha256": "eb37259ceb1b370244e2861514037390e4b3a4d97fd99d831e5dce0d33cb25c1"
     },
     {
       "name": "index.pck.parts.json",
       "size": 1245,
-      "sha256": "4badb4e0f6992e4b533ff3ff6338ebef3ac4b320e4821f1f7770bf9578f3f957"
+      "sha256": "71e7d18c3d2060109f37765448eb97ac1f001a90d587718591c129459c9dedac"
     },
     {
       "name": "index.png",
       "size": 21443,
       "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+    },
+    {
+      "name": "index.png.import",
+      "size": 929,
+      "sha256": "9ec28ad0301a263e4a630b0c078e609f1d545f88d2cfe3faf5f90b77167046e2"
     },
     {
       "name": "index.wasm",
