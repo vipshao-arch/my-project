@@ -1,7 +1,7 @@
 {
   "game": "遗忘潮汐",
   "repository": "vipshao-arch/my-project",
-  "prepared_at": "2026-11-24",
+  "prepared_at": "2026-11-26T06:32:31.876672+00:00",
   "files": [
     {
       "name": ".nojekyll",
@@ -15,8 +15,8 @@
     },
     {
       "name": "index.apple-touch-icon.png",
-      "size": 13842,
-      "sha256": "a470efe5e2206a10a2bbc534db68f8c863d2a97dcf3914ec544de8d1c9ed9b16"
+      "size": 11759,
+      "sha256": "05dc5bcfff5e8d06f231b99eff4aa872182084f1c62bd6697a2492167836dc62"
     },
     {
       "name": "index.audio.position.worklet.js",
@@ -30,13 +30,13 @@
     },
     {
       "name": "index.html",
-      "size": 9275,
-      "sha256": "511768ed2e9076c2691b6cec2fec3042c8dcce60eb60fd8fed1bdb0f0f6f30ba"
+      "size": 9154,
+      "sha256": "8c65203faf24fea47222154e92ef576e98d4777c685f09b2f805d4f3de766e15"
     },
     {
       "name": "index.icon.png",
-      "size": 6028,
-      "sha256": "6f8786de3aaf15f608a183313316a2dc10fb1ffe5970d54c3eb6bc62726fbfde"
+      "size": 5026,
+      "sha256": "fc9e1c333b250098b529c5f65bb6bd5e507a2a26705054c962788073d4e15fd1"
     },
     {
       "name": "index.js",
@@ -46,47 +46,47 @@
     {
       "name": "index.pck.part00",
       "size": 25165824,
-      "sha256": "5a060186757d1efe7ece96d127584c4e021bb0ea3083ace054d32a4fd3291ed2"
+      "sha256": "a9c47acaac6bbaf95893fca692b78947982c48451c513a805e8cf3f6231d41d6"
     },
     {
       "name": "index.pck.part01",
       "size": 25165824,
-      "sha256": "716cac4b8405b890836e2683ca96de84a72a3647b281a89438a690a595ea6525"
+      "sha256": "23fa11fc7ca716a9c85c7e5b42b18c85fa6a3f50aa81a581da715ab6e5451103"
     },
     {
       "name": "index.pck.part02",
       "size": 25165824,
-      "sha256": "8015dfda18f8f35942ffb90555b62028c4c601c30dcaa8e0badd1c067d63baef"
+      "sha256": "dc95cb52e0bb56e71ba17bab6fb1a9626e82cebe22492cc8b9975246cb76b32d"
     },
     {
       "name": "index.pck.part03",
       "size": 25165824,
-      "sha256": "f14defacaab31f38c77b4257d43650b37d7abade7168ef85be7b438452c7f420"
+      "sha256": "b7e0cb29dd47fe279c6e6b3c43fb86b1da2deda18ba2d0b3bf6b06e5958bd2a5"
     },
     {
       "name": "index.pck.part04",
       "size": 25165824,
-      "sha256": "4376e57abf0089af515b1c6360e616773cb23ae1b29882099cc9a9706072b7d0"
+      "sha256": "ad4fa5c81fc2cff76d060c2de189301bde25426d25b1f48c27be9273cdad1b6e"
     },
     {
       "name": "index.pck.part05",
       "size": 25165824,
-      "sha256": "c545897a345b774c7a991de31102929af947072c2a3051c6713d1ba2d2cddc01"
+      "sha256": "c20a9eaeea044ae29943bb1a02f872ce2551ac8f2042cf12b5222a8a0e878ad6"
     },
     {
       "name": "index.pck.part06",
       "size": 25165824,
-      "sha256": "9fb04510c61f977794d0195c39952464bec8f7d9363b16c30da6c0bc12592924"
+      "sha256": "0467cc2637a19f1748ca6352864776c3e5d9c84fda575aebc91a4257c98dec4e"
     },
     {
       "name": "index.pck.part07",
-      "size": 2612740,
-      "sha256": "8ce36864e95b38609c807cbb86f808ebd2b2744732da7f4576b38f8c5adf22e7"
+      "size": 12208560,
+      "sha256": "21b2785678f52f8ffb39186b531d282c0077ab45b52f3775fca9948a6f490c09"
     },
     {
       "name": "index.pck.parts.json",
-      "size": 1405,
-      "sha256": "6043aba0ad555996816f7c4040777f788f3c715798538adf2d85dccf0f3ba74e"
+      "size": 1406,
+      "sha256": "111a486a34ed3d7c01da8b8c6159642fe9c9545d243d0b2a478dbac029bf9709"
     },
     {
       "name": "index.png",
@@ -100,49 +100,50 @@
     }
   ],
   "pack": {
-    "bytes": 178773508,
-    "sha256": "246571cd05eccbfd739f56a814450ab1571752ca6165250c4ad7269353b7170d",
+    "bytes": 188369328,
+    "sha256": "e5246bdf73f9f3436612407bd708a6778eb1be5d023638a74948299ebda4e131",
     "parts": [
       {
         "name": "index.pck.part00",
         "bytes": 25165824,
-        "sha256": "5a060186757d1efe7ece96d127584c4e021bb0ea3083ace054d32a4fd3291ed2"
+        "sha256": "a9c47acaac6bbaf95893fca692b78947982c48451c513a805e8cf3f6231d41d6"
       },
       {
         "name": "index.pck.part01",
         "bytes": 25165824,
-        "sha256": "716cac4b8405b890836e2683ca96de84a72a3647b281a89438a690a595ea6525"
+        "sha256": "23fa11fc7ca716a9c85c7e5b42b18c85fa6a3f50aa81a581da715ab6e5451103"
       },
       {
         "name": "index.pck.part02",
         "bytes": 25165824,
-        "sha256": "8015dfda18f8f35942ffb90555b62028c4c601c30dcaa8e0badd1c067d63baef"
+        "sha256": "dc95cb52e0bb56e71ba17bab6fb1a9626e82cebe22492cc8b9975246cb76b32d"
       },
       {
         "name": "index.pck.part03",
         "bytes": 25165824,
-        "sha256": "f14defacaab31f38c77b4257d43650b37d7abade7168ef85be7b438452c7f420"
+        "sha256": "b7e0cb29dd47fe279c6e6b3c43fb86b1da2deda18ba2d0b3bf6b06e5958bd2a5"
       },
       {
         "name": "index.pck.part04",
         "bytes": 25165824,
-        "sha256": "4376e57abf0089af515b1c6360e616773cb23ae1b29882099cc9a9706072b7d0"
+        "sha256": "ad4fa5c81fc2cff76d060c2de189301bde25426d25b1f48c27be9273cdad1b6e"
       },
       {
         "name": "index.pck.part05",
         "bytes": 25165824,
-        "sha256": "c545897a345b774c7a991de31102929af947072c2a3051c6713d1ba2d2cddc01"
+        "sha256": "c20a9eaeea044ae29943bb1a02f872ce2551ac8f2042cf12b5222a8a0e878ad6"
       },
       {
         "name": "index.pck.part06",
         "bytes": 25165824,
-        "sha256": "9fb04510c61f977794d0195c39952464bec8f7d9363b16c30da6c0bc12592924"
+        "sha256": "0467cc2637a19f1748ca6352864776c3e5d9c84fda575aebc91a4257c98dec4e"
       },
       {
         "name": "index.pck.part07",
-        "bytes": 2612740,
-        "sha256": "8ce36864e95b38609c807cbb86f808ebd2b2744732da7f4576b38f8c5adf22e7"
+        "bytes": 12208560,
+        "sha256": "21b2785678f52f8ffb39186b531d282c0077ab45b52f3775fca9948a6f490c09"
       }
     ]
-  }
+  },
+  "version_token": "v=20261126_base_panel_loading_final4"
 }
